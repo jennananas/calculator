@@ -30,47 +30,60 @@ const operate = function(operator, a, b){
 }
 
 
-const buttons = document.querySelectorAll("input")
+// const operands = document.querySelectorAll(".operand")
+// const operators = document.querySelectorAll(".operator")
+// const clear = document.querySelector(".clearButton")
+// const result = document.querySelector(".result")
 const display = document.querySelector(".screen")
+const buttons = document.querySelectorAll("input")
 let operator = temp = ""
 let allNumbers = []
 let prevOp, currentOp, tempOp, result = null
 buttons.forEach(button => button.addEventListener('click', () => {
-    const clickedValue = button.value ; 
-    // console.log(typeof clickedValue)
+    const clickedValue = button.value ;
         if(clickedValue === "clear") {
             display.innerHTML = " "
             allNumbers = operator = temp = result = ""
         }
-        if(parseFloat(clickedValue)) {
-            if (allNumbers.length==1){
-                result = operate(currentOp, parseFloat(allNumbers[0]), parseInt(clickedValue))
-                allNumbers.splice(0, 1, result)
-                display.innerHTML = `<p>${result}</p>`
+        if(parseInt(clickedValue)) { // Si je clique sur un chiffre
+            temp = temp.concat(clickedValue)
+            display.innerHTML = `<p>${temp}</p>`
+        }
+        if(clickedValue == "."){
+            if (!temp) {
+                temp+='0.'
             }
             else {
-                temp = temp.concat(clickedValue)
-                display.innerHTML = `<p>${temp}</p>`
+                temp+='.'
             }
-
+            display.innerHTML = `<p>${temp}</p>`
         }
-        if(['+', '-', '*', '/'].includes(clickedValue)){
+        if(['+', '-', '*', '/', '='].includes(clickedValue)){
             if (currentOp == null) {
-                currentOp = clickedValue;
-                display.innerHTML = `<p>${temp}${currentOp}</p>`
+                currentOp = clickedValue
             } else {
                 prevOp = currentOp
                 currentOp = clickedValue
-                display.innerHTML = `<p>${result}${currentOp}</p>`
             }
-            if (temp){
+            
+            
+            if (temp) {
                 allNumbers = allNumbers.concat(temp)
-            }    
-            temp = ""
-        }
-        if(clickedValue == "."){
-            temp+='.'
-            display.innerHTML = `<p>${temp}</p>`
-        }
-    })
-)
+                temp=""
+            }
+            display.innerHTML = `<p>${allNumbers[0]}${currentOp}</p>`
+            if (allNumbers.length == 2){
+                result = operate(prevOp, parseFloat(allNumbers[0]), parseFloat(allNumbers[1]))
+                result = Math.round((result + Number.EPSILON) * 100000) / 100000
+                allNumbers.splice(0, 2, result)
+                if (clickedValue == "="){
+                    display.innerHTML = `<p>${result}</p>`
+                } else {
+                    display.innerHTML = `<p>${result}${currentOp}</p>`
+                }
+                
+            }
+            console.log(allNumbers)
+            console.log(clickedValue)
+        } 
+}))
