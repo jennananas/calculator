@@ -26,8 +26,51 @@ const operate = function(operator, a, b){
             return divide(a,b);
         default : 
             return "Invalid operator"
-
     }
 }
 
-console.log(operate("cjd",1,45))
+
+const buttons = document.querySelectorAll("input")
+const display = document.querySelector(".screen")
+let operator = temp = ""
+let allNumbers = []
+let prevOp, currentOp, tempOp, result = null
+buttons.forEach(button => button.addEventListener('click', () => {
+    const clickedValue = button.value ; 
+    // console.log(typeof clickedValue)
+        if(clickedValue === "clear") {
+            display.innerHTML = " "
+            allNumbers = operator = temp = result = ""
+        }
+        if(parseFloat(clickedValue)) {
+            if (allNumbers.length==1){
+                result = operate(currentOp, parseFloat(allNumbers[0]), parseInt(clickedValue))
+                allNumbers.splice(0, 1, result)
+                display.innerHTML = `<p>${result}</p>`
+            }
+            else {
+                temp = temp.concat(clickedValue)
+                display.innerHTML = `<p>${temp}</p>`
+            }
+
+        }
+        if(['+', '-', '*', '/'].includes(clickedValue)){
+            if (currentOp == null) {
+                currentOp = clickedValue;
+                display.innerHTML = `<p>${temp}${currentOp}</p>`
+            } else {
+                prevOp = currentOp
+                currentOp = clickedValue
+                display.innerHTML = `<p>${result}${currentOp}</p>`
+            }
+            if (temp){
+                allNumbers = allNumbers.concat(temp)
+            }    
+            temp = ""
+        }
+        if(clickedValue == "."){
+            temp+='.'
+            display.innerHTML = `<p>${temp}</p>`
+        }
+    })
+)
