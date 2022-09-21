@@ -11,7 +11,13 @@ const multiply = function(a,b){
 }
 
 const divide = function(a,b){
-    return b==0 ? alert("You can't divide by 0") : a/b
+    if(b==0){
+        alert("You can't divide by 0") 
+        return 0
+    } else {
+        return  a/b
+    }
+       
 }
 
 const operate = function(operator, a, b){
@@ -57,16 +63,16 @@ clearButton.addEventListener("click", () => {
 })
 
 operands.forEach(operand => operand.addEventListener("click", () => {
-    console.log(!numbTemp)
-    if(!numbTemp){
-        if(operand.value!="0"){
-            numbTemp = numbTemp + operand.value
+    numbTemp = numbTemp + operand.value
+    if (!parseFloat(numbTemp)){
+        if(numbTemp.includes(".")){
             mainDisplay.innerHTML = `<p>${numbTemp}</p>`
-        } 
-    } else {
-        numbTemp = numbTemp + operand.value
-        mainDisplay.innerHTML = `<p>${numbTemp}</p>`
+        } else {
+            mainDisplay.innerHTML = `<p>0</p>`
+        }
         
+    } else {
+        mainDisplay.innerHTML = `<p>${parseFloat(numbTemp)}</p>`
     }
 }))
 
@@ -112,7 +118,7 @@ operators.forEach(operator => operator.addEventListener("click", () => {
 
 result.addEventListener("click", () => {
     numbTemp = parseFloat(numbTemp)
-    if (allNumbers[0] == null || !currentOp || !numbTemp){
+    if (allNumbers[0] == null || !currentOp){
         `<p>0</p>`
     } else {
         let finalResult = operate(currentOp, allNumbers[0], numbTemp)
@@ -121,3 +127,4 @@ result.addEventListener("click", () => {
         secondDisplay.innerHTML = `<p>${allNumbers[0]} ${currentOp} ${numbTemp} =</p>`
     }
 })
+
