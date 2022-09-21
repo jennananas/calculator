@@ -11,7 +11,7 @@ const multiply = function(a,b){
 }
 
 const divide = function(a,b){
-    return b===0 ? "ERROR" : a/b
+    return b==0 ? alert("You can't divide by 0") : a/b
 }
 
 const operate = function(operator, a, b){
@@ -41,28 +41,40 @@ const decimal = document.querySelector('.decimal')
 
 
 // Initial state
-let prevOp = currentOp = ""
-let operationResult = numbTemp = 0
+let prevOp = currentOp = numbTemp = ""
+let operationResult = 0
 let allNumbers = []
 let isClicked = false
-mainDisplay.innerHTML = `<p>${numbTemp}</p>`
+mainDisplay.innerHTML = `<p>0</p>`
 
 clearButton.addEventListener("click", () => {
-    prevOp = currentOp =""
-    operationResult = numbTemp = 0
+    prevOp = currentOp = numbTemp = ""
+    operationResult = 0
     allNumbers = []
-    mainDisplay.innerHTML = `<p>${numbTemp}</p>`
+    mainDisplay.innerHTML = `<p>0</p>`
     secondDisplay.innerHTML = `<p></p>`
     isClicked = false
 })
 
 operands.forEach(operand => operand.addEventListener("click", () => {
-    numbTemp = parseFloat(numbTemp + "" + operand.value)
-    mainDisplay.innerHTML = `<p>${numbTemp}</p>`
+    console.log(!numbTemp)
+    if(!numbTemp){
+        if(operand.value!="0"){
+            numbTemp = numbTemp + operand.value
+            mainDisplay.innerHTML = `<p>${numbTemp}</p>`
+        } 
+    } else {
+        numbTemp = numbTemp + operand.value
+        mainDisplay.innerHTML = `<p>${numbTemp}</p>`
+        
+    }
 }))
 
 decimal.addEventListener("click", () => {
     if (!isClicked){
+        if (!numbTemp){
+            numbTemp = "0"
+        }
         numbTemp = numbTemp + "."
         mainDisplay.innerHTML = `<p>${numbTemp}</p>`
         isClicked = true
@@ -70,6 +82,7 @@ decimal.addEventListener("click", () => {
 })
 
 operators.forEach(operator => operator.addEventListener("click", () => {
+    numbTemp = parseFloat(numbTemp)
     if (!numbTemp){
         if (!allNumbers[0]) {
             secondDisplay.innerHTML = `<p>0 ${operator.value}</p>`
@@ -98,10 +111,12 @@ operators.forEach(operator => operator.addEventListener("click", () => {
 }))
 
 result.addEventListener("click", () => {
-    if (!allNumbers[0] || !currentOp || !numbTemp){
+    numbTemp = parseFloat(numbTemp)
+    if (allNumbers[0] == null || !currentOp || !numbTemp){
         `<p>0</p>`
     } else {
         let finalResult = operate(currentOp, allNumbers[0], numbTemp)
+        finalResult = Math.round((finalResult + Number.EPSILON) * 100000) / 100000
         mainDisplay.innerHTML = `<p>${finalResult}</p>`
         secondDisplay.innerHTML = `<p>${allNumbers[0]} ${currentOp} ${numbTemp} =</p>`
     }
