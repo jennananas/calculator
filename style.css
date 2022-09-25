@@ -1,27 +1,52 @@
 h1 {
     text-align: left;
 }
+body {
+    display: flex;
+    background-color: #F1F0EA;
+    justify-content: center;
+    margin-top : 50px;
+    font-family: 'Montserrat', sans-serif;
+}
 
 .calculator {
+    
+    background-color: #474448;
     display : flex;
     flex-direction: column;
-    gap : 10px
+    align-items: center;
+    gap : 10px;
+    border : 1px solid;
+    border-radius: 15px;
+    width: 300px;
+    height: 350px;
+    padding : 10px;
 }
 
 .screen {
     flex-direction: column;
+    background-color: #E0DDCF;
     border: 1px solid;
+    border-radius: 15px;
     width: 238px;
     height : 80px;
     padding : 10px 20px;
     text-align : right;
 }
+
+
 .main {
+    display : flex;
+    justify-content: end;
+    align-items: flex-end;
+    flex : 3 0px;
     min-height: 40px;
     font-size: 20px;
 }
 .second {
-    font-size: 10px;
+    display : flex;
+    justify-content: end;
+    font-size: 15px;
     min-height: 20px;
 }
 
@@ -31,7 +56,13 @@ h1 {
     grid-template-rows: repeat(4, 1fr);
     grid-gap : 2px;
     width: 280px;
-    height: 200px;
+    height: 300px;
+}
+
+input {
+    border-radius: 15px;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #E0DDCF;
 }
 
 .buttons input:nth-child(4n+4){
@@ -40,4 +71,5 @@ h1 {
 
 .clearButton {
     grid-column: span 4;
+    min-height: 40px;
 }

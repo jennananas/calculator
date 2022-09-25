@@ -52,7 +52,7 @@ clearButton.addEventListener("click", () => clearDisplay())
 operators.forEach(operator => operator.addEventListener("click", () => {
     if (temp!=""){
         numbers.push(temp)
-    }
+    } else return
     setOperator(operator.value)
     temp=""
     evaluate(prevOp)
@@ -128,6 +128,7 @@ function evaluate(ope){
         return
     } else if (numbers.length==2){
         operationResult = operate(ope, numbers[0], numbers[1])
+        operationResult = Math.round((operationResult + Number.EPSILON) * 100000) / 100000
         numbers.splice(0, 2, operationResult)
         mainDisplay.textContent = operationResult 
         return numbers
