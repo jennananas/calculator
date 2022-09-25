@@ -1,26 +1,18 @@
 const add = function(a,b){
     return a+b
 }
-
 const subtract = function(a,b){
     return a-b
 }
-
 const multiply = function(a,b){
     return a*b
 }
-
 const divide = function(a,b){
-    if(b==0){
-        alert("You can't divide by 0") 
-        return 0
-    } else {
-        return  a/b
+    return  a/b
     }
-       
-}
-
 const operate = function(operator, a, b){
+    a = parseFloat(a)
+    b = parseFloat(b)
     switch(operator){
         case "+" :
             return add(a,b);
@@ -29,14 +21,14 @@ const operate = function(operator, a, b){
         case "*" : 
             return multiply(a,b);
         case "/" : 
-            return divide(a,b);
+            if (b==="0"){
+                return null
+            } else return divide(a,b)
         default : 
-            return "Invalid operator"
+            return alert("Invalid operator")
     }
 }
-
 // Get DOM elements
-
 const mainDisplay = document.querySelector(".main")
 const secondDisplay = document.querySelector(".second")
 const operands = document.querySelectorAll(".operand")
@@ -45,86 +37,98 @@ const result = document.querySelector(".result")
 const clearButton = document.querySelector(".clearButton")
 const decimal = document.querySelector('.decimal')
 
-
 // Initial state
-let prevOp = currentOp = numbTemp = ""
+let prevOp = currentOp = ""
 let operationResult = 0
-let allNumbers = []
 let isClicked = false
-mainDisplay.innerHTML = `<p>0</p>`
+let numbers = []
+let temp = ""
+mainDisplay.textContent = "0"
 
-clearButton.addEventListener("click", () => {
-    prevOp = currentOp = numbTemp = ""
-    operationResult = 0
-    allNumbers = []
-    mainDisplay.innerHTML = `<p>0</p>`
-    secondDisplay.innerHTML = `<p></p>`
-    isClicked = false
-})
-
-operands.forEach(operand => operand.addEventListener("click", () => {
-    numbTemp = numbTemp + operand.value
-    if (!parseFloat(numbTemp)){
-        if(numbTemp.includes(".")){
-            mainDisplay.innerHTML = `<p>${numbTemp}</p>`
-        } else {
-            mainDisplay.innerHTML = `<p>0</p>`
-        }
-        
-    } else {
-        mainDisplay.innerHTML = `<p>${parseFloat(numbTemp)}</p>`
-    }
-}))
-
-decimal.addEventListener("click", () => {
-    if (!isClicked){
-        if (!numbTemp){
-            numbTemp = "0"
-        }
-        numbTemp = numbTemp + "."
-        mainDisplay.innerHTML = `<p>${numbTemp}</p>`
-        isClicked = true
-    }  
-})
-
+// Events
+operands.forEach(operand => operand.addEventListener("click", () => setNumber(operand.value)))
+decimal.addEventListener("click", () => putDecimal())
+clearButton.addEventListener("click", () => clearDisplay())
 operators.forEach(operator => operator.addEventListener("click", () => {
-    numbTemp = parseFloat(numbTemp)
-    if (!numbTemp){
-        if (!allNumbers[0]) {
-            secondDisplay.innerHTML = `<p>0 ${operator.value}</p>`
-        }
-        else {
-            secondDisplay.innerHTML = `<p>${allNumbers[0]} ${operator.value}</p>`
-        }
-    } else {
-        allNumbers = allNumbers.concat(numbTemp)
-        numbTemp = ""
-        if (!currentOp){
-            currentOp = operator.value
-        } else {
-            prevOp = currentOp
-            currentOp = operator.value
-        }
-        if (allNumbers.length==2){
-            operationResult = operate(prevOp, allNumbers[0], allNumbers[1])
-            operationResult = Math.round((operationResult + Number.EPSILON) * 100000) / 100000
-            allNumbers.splice(0, 2, operationResult)
-            mainDisplay.innerHTML = `<p>${allNumbers[0]}</p>`
-        }
-        secondDisplay.innerHTML = `<p>${allNumbers[0]} ${currentOp}</p>`
+    if (temp!=""){
+        numbers.push(temp)
     }
-    isClicked = false
+    console.log(numbers)
+    setOperator(operator.value)
+    temp=""
+    evaluate(prevOp)
+    secondDisplay.textContent = numbers[0] + " " + currentOp
 }))
 
 result.addEventListener("click", () => {
-    numbTemp = parseFloat(numbTemp)
-    if (allNumbers[0] == null || !currentOp){
-        `<p>0</p>`
-    } else {
-        let finalResult = operate(currentOp, allNumbers[0], numbTemp)
-        finalResult = Math.round((finalResult + Number.EPSILON) * 100000) / 100000
-        mainDisplay.innerHTML = `<p>${finalResult}</p>`
-        secondDisplay.innerHTML = `<p>${allNumbers[0]} ${currentOp} ${numbTemp} =</p>`
+    if (temp!=""){
+        numbers.push(temp)
     }
+    if (currentOp && numbers[1]){
+        secondDisplay.textContent = `${numbers[0]} ${currentOp} ${numbers[1]} =`
+        evaluate(currentOp)
+    }
+    prevOp = currentOp = temp = ""
 })
 
+// Remets toutes les variables à 0
+function clearDisplay(){
+    prevOp = currentOp = temp = ""
+    operationResult = 0
+    numbers = []
+    isClicked = false
+    mainDisplay.textContent = "0"
+    secondDisplay.textContent = ""
+}
+
+// Prends un chiffre et l'ajoute a une variable de stockage
+function setNumber(number){
+    if (mainDisplay.textContent==="0"){
+        mainDisplay.textContent = ""
+    }
+    temp += number
+    mainDisplay.textContent = temp
+}
+
+// Ajoute le "."
+function putDecimal(){
+    if (!isClicked) {
+        temp += "."
+        mainDisplay.textContent = temp
+        isClicked = true
+    }
+}
+
+// Renvoie l'operateur
+function setOperator(clickedOp){
+    if (!currentOp){
+        currentOp = clickedOp
+    } else {
+        prevOp = currentOp
+        currentOp = clickedOp
+    }
+    isClicked = false
+    return currentOp
+
+}
+
+
+// effectue l'operation
+// Si 2 operandes et currentOp => operate => MAJ affichage => stockage resultat
+// Sinon return
+function evaluate(ope){
+    if (numbers.length!= 2){
+        return
+    } else if (!ope){
+        return
+    } else if (ope == "/" && numbers[1]=="0"){
+        alert("No division by 0")
+        clearDisplay()
+        return
+    } else {
+        operationResult = operate(ope, numbers[0], numbers[1])
+        numbers.splice(0, 2, operationResult)
+        mainDisplay.textContent = operationResult 
+        return numbers
+    }
+}
