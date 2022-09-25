@@ -50,30 +50,9 @@ mainDisplay.textContent = "0"
 operands.forEach(operand => operand.addEventListener("click", () => setNumber(operand.value)))
 decimal.addEventListener("click", () => putDecimal())
 clearButton.addEventListener("click", () => clearDisplay())
-operators.forEach(operator => operator.addEventListener("click", () => {
-    if (temp!=""){
-        numbers.push(temp)
-    } else return
-    setOperator(operator.value)
-    temp=""
-    evaluate(prevOp)
-    secondDisplay.textContent = numbers[0] + " " + currentOp
-}))
+operators.forEach(operator => operator.addEventListener("click", () => doOperation(operator.value)))
 
-result.addEventListener("click", () => {
-    if (temp!="" && (currentOp || prevOp)){
-        numbers.push(temp)
-    }
-    if (numbers.length != 2){
-        return
-    } else {
-        if (currentOp && numbers[1]){
-            secondDisplay.textContent = `${numbers[0]} ${currentOp} ${numbers[1]} =`
-            evaluate(currentOp)
-        }
-    }
-    prevOp = currentOp = temp = ""
-})
+result.addEventListener("click", () => getResult())
 
 undo.addEventListener("click", () => undoInput())
 
@@ -138,7 +117,41 @@ function evaluate(ope){
     }
 }
 
+function getResult(){
+    if (temp!="" && (currentOp || prevOp)){
+        numbers.push(temp)
+    }
+    if (numbers.length != 2){
+        return
+    } else {
+        if (currentOp && numbers[1]){
+            secondDisplay.textContent = `${numbers[0]} ${currentOp} ${numbers[1]} =`
+            evaluate(currentOp)
+        }
+    }
+    prevOp = currentOp = temp = ""
+}
+
 function undoInput(){
     temp = temp.slice(0, -1)
     mainDisplay.textContent = temp
 }
+
+function doOperation(ope){
+    if (temp!=""){
+        numbers.push(temp)
+    } else return
+    setOperator(ope)
+    temp=""
+    evaluate(prevOp)
+    secondDisplay.textContent = numbers[0] + " " + currentOp
+}
+
+window.addEventListener("keydown", (e) => {
+    if (e.key >= 0 && e.key <= 9) setNumber(e.key)
+    if (e.key === ".") putDecimal()
+    if (e.key === "=" || e.key === "Enter") getResult()
+    if (e.key === "+" || e.key === "-" || e.key === "*" || e.key === "/") doOperation(e.key)
+    if (e.key === "Backspace") undoInput()
+    console.log(e.key)
+})
