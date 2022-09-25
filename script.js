@@ -53,7 +53,6 @@ operators.forEach(operator => operator.addEventListener("click", () => {
     if (temp!=""){
         numbers.push(temp)
     }
-    console.log(numbers)
     setOperator(operator.value)
     temp=""
     evaluate(prevOp)
@@ -61,12 +60,16 @@ operators.forEach(operator => operator.addEventListener("click", () => {
 }))
 
 result.addEventListener("click", () => {
-    if (temp!=""){
+    if (temp!="" && (currentOp || prevOp)){
         numbers.push(temp)
     }
-    if (currentOp && numbers[1]){
-        secondDisplay.textContent = `${numbers[0]} ${currentOp} ${numbers[1]} =`
-        evaluate(currentOp)
+    if (numbers.length != 2){
+        return
+    } else {
+        if (currentOp && numbers[1]){
+            secondDisplay.textContent = `${numbers[0]} ${currentOp} ${numbers[1]} =`
+            evaluate(currentOp)
+        }
     }
     prevOp = currentOp = temp = ""
 })
@@ -117,15 +120,13 @@ function setOperator(clickedOp){
 // Si 2 operandes et currentOp => operate => MAJ affichage => stockage resultat
 // Sinon return
 function evaluate(ope){
-    if (numbers.length!= 2){
-        return
-    } else if (!ope){
+    if (!ope){
         return
     } else if (ope == "/" && numbers[1]=="0"){
         alert("No division by 0")
         clearDisplay()
         return
-    } else {
+    } else if (numbers.length==2){
         operationResult = operate(ope, numbers[0], numbers[1])
         numbers.splice(0, 2, operationResult)
         mainDisplay.textContent = operationResult 
