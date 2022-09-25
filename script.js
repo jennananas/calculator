@@ -36,6 +36,7 @@ const operators = document.querySelectorAll(".operator")
 const result = document.querySelector(".result")
 const clearButton = document.querySelector(".clearButton")
 const decimal = document.querySelector('.decimal')
+const undo = document.querySelector(".undoButton")
 
 // Initial state
 let prevOp = currentOp = ""
@@ -73,6 +74,8 @@ result.addEventListener("click", () => {
     }
     prevOp = currentOp = temp = ""
 })
+
+undo.addEventListener("click", () => undoInput())
 
 // Remets toutes les variables à 0
 function clearDisplay(){
@@ -133,4 +136,9 @@ function evaluate(ope){
         mainDisplay.textContent = operationResult 
         return numbers
     }
+}
+
+function undoInput(){
+    temp = temp.slice(0, -1)
+    mainDisplay.textContent = temp
 }
