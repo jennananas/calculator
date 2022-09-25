@@ -121,9 +121,7 @@ function getResult(){
     if (temp!="" && (currentOp || prevOp)){
         numbers.push(temp)
     }
-    if (numbers.length != 2){
-        return
-    } else {
+    if (numbers.length == 2){
         if (currentOp && numbers[1]){
             secondDisplay.textContent = `${numbers[0]} ${currentOp} ${numbers[1]} =`
             evaluate(currentOp)
@@ -140,7 +138,7 @@ function undoInput(){
 function doOperation(ope){
     if (temp!=""){
         numbers.push(temp)
-    } else return
+    }
     setOperator(ope)
     temp=""
     evaluate(prevOp)
